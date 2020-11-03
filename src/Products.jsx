@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Spinner from "./Spinner";
 import useFetch from "./services/useFetch";
 import { useParams } from "react-router-dom";
+import PageNotFound from "./PageNotFound";
 
 export default function Products() {
   const [size, setSize] = useState("");
@@ -28,6 +29,7 @@ export default function Products() {
 
   if (error) throw error; // error boundary won't handle async errors, so we need to catch and rethrow it like this
   if (loading) return <Spinner />;
+  if (products.length === 0) return <PageNotFound />;
 
   return (
     <>
