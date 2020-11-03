@@ -1,5 +1,6 @@
 import React from "react";
 import { useParams } from "react-router-dom";
+import PageNotFound from "./PageNotFound";
 import useFetch from "./services/useFetch";
 import Spinner from "./Spinner";
 
@@ -8,6 +9,7 @@ export default function Detail() {
   const { data: product, error, loading } = useFetch(`products/${id}`);
 
   if (loading) return <Spinner />;
+  if (!product) return <PageNotFound />;
   if (error) throw error;
 
   return (
