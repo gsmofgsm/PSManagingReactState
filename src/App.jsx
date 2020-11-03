@@ -7,9 +7,12 @@ import { getProducts } from "./services/productService";
 export default function App() {
   const [size, setSize] = useState("");
   const [products, setProducts] = useState([]);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
-    getProducts("shoes").then((reponse) => setProducts(reponse));
+    getProducts("shoes")
+      .then((reponse) => setProducts(reponse))
+      .catch((e) => setError(e));
   }, []);
 
   function renderProduct(p) {
@@ -27,6 +30,8 @@ export default function App() {
   const filteredProducts = size
     ? products.filter((p) => p.skus.find((s) => s.size === parseInt(size)))
     : products;
+
+  if (error) throw error; // error boundary won't handle async errors, so we need to catch and rethrow it like this
 
   return (
     <>
