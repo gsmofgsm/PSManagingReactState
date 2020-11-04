@@ -10,7 +10,15 @@ export default function Checkout({ cart }) {
   const [address, setAddress] = useState(emptyAddress);
 
   function handleChange(e) {
-    // TODO
+    e.persist(); // persist the event,
+    // otherwise react will gabage collect it before the function call,
+    // only neccessary for react < 17 and when use setState function
+    setAddress((curAddress) => {
+      return {
+        ...curAddress,
+        [e.target.id]: e.target.value,
+      };
+    });
   }
 
   function handleBlur(event) {
