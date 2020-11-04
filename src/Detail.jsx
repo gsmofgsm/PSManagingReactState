@@ -4,7 +4,7 @@ import PageNotFound from "./PageNotFound";
 import useFetch from "./services/useFetch";
 import Spinner from "./Spinner";
 
-export default function Detail() {
+export default function Detail(props) {
   const { id } = useParams();
   const navigate = useNavigate();
   const [sku, setSku] = useState("");
@@ -33,6 +33,7 @@ export default function Detail() {
           disabled={!sku}
           className="btn btn-primary"
           onClick={() => {
+            props.addToCart(id, sku);
             navigate("/cart");
           }}
         >
