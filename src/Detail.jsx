@@ -30,6 +30,7 @@ export default function Detail() {
       </select>
       <p>
         <button
+          disabled={!sku}
           className="btn btn-primary"
           onClick={() => {
             navigate("/cart");
