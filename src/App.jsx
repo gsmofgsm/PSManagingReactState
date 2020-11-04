@@ -21,6 +21,8 @@ export default function App() {
   useEffect(() => localStorage.setItem("cart", JSON.stringify(cart)), [cart]);
 
   function addToCart(id, sku) {
+    // Setting state is async and batched
+    // so use a func to reference current state
     setCart((items) => {
       const itemInCart = items.find((i) => i.sku === sku);
       if (itemInCart) {
