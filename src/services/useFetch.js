@@ -15,14 +15,14 @@ export default function useFetch(url) {
         const reponse = await fetch(baseUrl + url);
         if (reponse.ok) {
           const json = await reponse.json();
-          if (isMounted.currrent) setData(json);
+          if (isMounted.current) setData(json);
         } else {
           throw reponse;
         }
       } catch (e) {
-        if (isMounted.currrent) setError(e);
+        if (isMounted.current) setError(e);
       } finally {
-        if (isMounted.currrent) setLoading(false);
+        if (isMounted.current) setLoading(false);
       }
     };
     init();
