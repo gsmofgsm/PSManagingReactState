@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { saveShippingAddress } from "./services/shippingService";
 
 const STATUS = {
@@ -33,11 +33,11 @@ export default class Checkout extends React.Component {
   // }
 
   isValid() {
-    const errors = getErrors(this.state.address);
+    const errors = this.getErrors(this.state.address);
     return Object.keys(errors).length === 0;
   }
 
-  handleChange(e) {
+  handleChange = (e) => {
     e.persist(); // persist the event,
     // otherwise react will gabage collect it before the function call,
     // only neccessary for react < 17 and when use setState function
@@ -49,16 +49,16 @@ export default class Checkout extends React.Component {
         }, // only state of the given property is updated
       };
     });
-  }
+  };
 
-  handleBlur(event) {
+  handleBlur = (event) => {
     event.persist(); // persist the event,
     this.setState((state) => {
       return { touched: { ...state.touched, [event.target.id]: true } };
     });
-  }
+  };
 
-  async handleSubmit(event) {
+  handleSubmit = async (event) => {
     event.preventDefault();
     this.setState({ status: STATUS.SUBMITTING });
     if (this.isValid()) {
@@ -72,7 +72,7 @@ export default class Checkout extends React.Component {
     } else {
       this.setState({ status: STATUS.SUBMITTED });
     }
-  }
+  };
 
   getErrors(address) {
     const result = {};
@@ -81,7 +81,12 @@ export default class Checkout extends React.Component {
     return result;
   }
 
-  rendor() {
+  render() {
+    const { status, saveError, touched, address } = this.state;
+
+    // Derived state
+    const errors = this.getErrors(this.state.address);
+
     // jsx by rendor method
     if (saveError) throw saveError;
     if (status === STATUS.COMPLETED) {
@@ -91,7 +96,7 @@ export default class Checkout extends React.Component {
     return (
       <>
         <h1>Shipping Info</h1>
-        {!isValid && status === STATUS.SUBMITTED && (
+        {!this.isValid() && status === STATUS.SUBMITTED && (
           <div role="alert">
             <p>Please fix the following errors:</p>
             <ul>
@@ -101,7 +106,7 @@ export default class Checkout extends React.Component {
             </ul>
           </div>
         )}
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={this.handleSubmit}>
           <div>
             <label htmlFor="city">City</label>
             <br />
@@ -109,8 +114,8 @@ export default class Checkout extends React.Component {
               id="city"
               type="text"
               value={address.city}
-              onBlur={handleBlur}
-              onChange={handleChange}
+              onBlur={this.handleBlur}
+              onChange={this.handleChange}
             />
             <p role="alert">
               {(touched.city || status === STATUS.SUBMITTED) && errors.city}
@@ -123,8 +128,8 @@ export default class Checkout extends React.Component {
             <select
               id="country"
               value={address.country}
-              onBlur={handleBlur}
-              onChange={handleChange}
+              onBlur={this.handleBlur}
+              onChange={this.handleChange}
             >
               <option value="">Select Country</option>
               <option value="China">China</option>
