@@ -41,34 +41,36 @@ export default class Checkout extends React.Component {
     e.persist(); // persist the event,
     // otherwise react will gabage collect it before the function call,
     // only neccessary for react < 17 and when use setState function
-    setAddress((curAddress) => {
+    this.setState((state) => {
       return {
-        ...curAddress,
-        [e.target.id]: e.target.value,
+        address: {
+          ...state.address,
+          [e.target.id]: e.target.value,
+        }, // only state of the given property is updated
       };
     });
   }
 
   handleBlur(event) {
     event.persist(); // persist the event,
-    setTouched((cur) => {
-      return { ...cur, [event.target.id]: true };
+    this.setState((state) => {
+      return { touched: { ...state.touched, [event.target.id]: true } };
     });
   }
 
   async handleSubmit(event) {
     event.preventDefault();
-    setStatus(STATUS.SUBMITTING);
-    if (isValid) {
+    this.setState({ status: STATUS.SUBMITTING });
+    if (this.isValid()) {
       try {
-        await saveShippingAddress(address);
+        await saveShippingAddress(this.state.address);
         this.props.dispatch({ type: "empty" });
-        setStatus(STATUS.COMPLETED);
+        this.setState({ status: STATUS.COMPLETED });
       } catch (e) {
-        setSaveError(e);
+        this.setState({ saveError: e });
       }
     } else {
-      setStatus(STATUS.SUBMITTED);
+      this.setState({ status: STATUS.SUBMITTED });
     }
   }
 
