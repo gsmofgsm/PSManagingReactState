@@ -34,7 +34,7 @@ export default function Detail(props) {
           onClick={() => {
             const sku = skuRef.current.value;
             if (!sku) return alert("Select size.");
-            props.addToCart(id, sku);
+            props.dispatch({ type: "add", id, sku });
             navigate("/cart");
           }}
         >
