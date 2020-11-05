@@ -8,6 +8,7 @@ import Detail from "./DetailRefs";
 import Cart from "./Cart";
 import Checkout from "./Checkout";
 import cartReducer from "./cartReducer";
+import { CartContext } from "./cartContext";
 
 let initialCart;
 try {
@@ -23,7 +24,7 @@ export default function App() {
   useEffect(() => localStorage.setItem("cart", JSON.stringify(cart)), [cart]);
 
   return (
-    <>
+    <CartContext.Provider value={{ cart, dispatch }}>
       <div className="content">
         <Header />
         <main>
@@ -34,10 +35,7 @@ export default function App() {
               path="/:category/:id"
               element={<Detail dispatch={dispatch} />}
             />
-            <Route
-              path="/cart"
-              element={<Cart cart={cart} dispatch={dispatch} />}
-            />
+            <Route path="/cart" element={<Cart />} />
             <Route
               path="/checkout"
               element={<Checkout cart={cart} dispatch={dispatch} />}
@@ -46,6 +44,6 @@ export default function App() {
         </main>
       </div>
       <Footer />
-    </>
+    </CartContext.Provider>
   );
 }
