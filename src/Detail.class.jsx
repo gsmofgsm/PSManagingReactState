@@ -15,53 +15,60 @@ export class Detail extends React.Component {
     sku: "",
   };
 
-  static contextType = CartContext; // this exposes the context under this.context
-
   render() {
     const { id, navigate } = this.props;
     const { sku } = this.state;
-
+    // to consume multiple contexts, nest these consumers in render
     return (
-      <Fetch url={`products/${id}`}>
-        {(product, loading, error) => {
-          if (loading) return <Spinner />;
-          if (!product) return <PageNotFound />;
-          if (error) throw error;
+      <CartContext.Consumer>
+        {({ dispatch }) => {
           return (
-            <div id="detail">
-              <h1>what {product.name}</h1>
-              <p>{product.description}</p>
-              <p id="price">${product.price}</p>
+            <Fetch url={`products/${id}`}>
+              {(product, loading, error) => {
+                if (loading) return <Spinner />;
+                if (!product) return <PageNotFound />;
+                if (error) throw error;
+                return (
+                  <div id="detail">
+                    <h1>what {product.name}</h1>
+                    <p>{product.description}</p>
+                    <p id="price">${product.price}</p>
 
-              <select
-                id="sku"
-                value={sku}
-                onChange={(e) => this.setState({ sku: e.target.value })}
-              >
-                <option value="">What size</option>
-                {product.skus.map(({ sku, size }) => (
-                  <option key={sku} value={sku}>
-                    {size}
-                  </option>
-                ))}
-              </select>
-              <p>
-                <button
-                  disabled={!sku}
-                  className="btn btn-primary"
-                  onClick={() => {
-                    this.context.dispatch({ type: "add", id, sku });
-                    navigate("/cart");
-                  }}
-                >
-                  Add to cart
-                </button>
-              </p>
-              <img src={`/images/${product.image}`} alt={product.category} />
-            </div>
+                    <select
+                      id="sku"
+                      value={sku}
+                      onChange={(e) => this.setState({ sku: e.target.value })}
+                    >
+                      <option value="">What size</option>
+                      {product.skus.map(({ sku, size }) => (
+                        <option key={sku} value={sku}>
+                          {size}
+                        </option>
+                      ))}
+                    </select>
+                    <p>
+                      <button
+                        disabled={!sku}
+                        className="btn btn-primary"
+                        onClick={() => {
+                          this.context.dispatch({ type: "add", id, sku });
+                          navigate("/cart");
+                        }}
+                      >
+                        Add to cart
+                      </button>
+                    </p>
+                    <img
+                      src={`/images/${product.image}`}
+                      alt={product.category}
+                    />
+                  </div>
+                );
+              }}
+            </Fetch>
           );
         }}
-      </Fetch>
+      </CartContext.Consumer>
     );
   }
 }
