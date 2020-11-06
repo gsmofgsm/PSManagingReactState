@@ -3,12 +3,11 @@ import { useNavigate, useParams } from "react-router-dom";
 import PageNotFound from "./PageNotFound";
 import { Fetch } from "./services/useFetch";
 import Spinner from "./Spinner";
-import { useCart } from "./cartContext";
+import { CartContext } from "./cartContext";
 
 export default function DetailWrapper() {
-  const { dispatch } = useCart();
   const { id } = useParams();
-  return <Detail id={id} navigate={useNavigate()} dispatch={dispatch}></Detail>;
+  return <Detail id={id} navigate={useNavigate()}></Detail>;
 }
 
 export class Detail extends React.Component {
@@ -16,8 +15,10 @@ export class Detail extends React.Component {
     sku: "",
   };
 
+  static contextType = CartContext; // this exposes the context under this.context
+
   render() {
-    const { id, navigate, dispatch } = this.props;
+    const { id, navigate } = this.props;
     const { sku } = this.state;
 
     return (
@@ -49,7 +50,7 @@ export class Detail extends React.Component {
                   disabled={!sku}
                   className="btn btn-primary"
                   onClick={() => {
-                    dispatch({ type: "add", id, sku });
+                    this.context.dispatch({ type: "add", id, sku });
                     navigate("/cart");
                   }}
                 >
